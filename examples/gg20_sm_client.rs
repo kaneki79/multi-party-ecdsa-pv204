@@ -58,9 +58,11 @@ pub struct SmClient {
 
 impl SmClient {
     pub fn new(address: surf::Url, room_id: &str) -> Result<Self> {
+        let host = &address.path()[1..];
         let config = surf::Config::new()
             .set_base_url(address.join(&format!("rooms/{}/", room_id))?)
-            .set_timeout(None);
+            .set_timeout(None)
+            .add_header("Host", host).unwrap();
         Ok(Self {
             http_client: config.try_into()?,
         })
